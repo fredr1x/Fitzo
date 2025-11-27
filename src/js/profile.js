@@ -3,7 +3,9 @@ document.getElementById('homeBtn').addEventListener('click', () => {
 });
 
 const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-if (!currentUser) window.location.href = "login.html";
+if (!currentUser) {
+    window.location.href = "login.html";
+}
 
 const profileName = document.getElementById("profileName");
 const profileEmail = document.getElementById("profileEmail");
@@ -17,6 +19,66 @@ profileBalance.textContent = "$" + currentUser.balance;
 profilePlan.textContent = currentUser.plan || "Free";
 
 if (currentUser.avatar) profileAvatar.src = currentUser.avatar;
+
+window.addEventListener('DOMContentLoaded', () => {
+    const purchasedPlan = sessionStorage.getItem('purchasedPlan');
+
+    if (purchasedPlan) {
+        const planData = JSON.parse(purchasedPlan);
+        processPlanPurchase(planData);
+        sessionStorage.removeItem('purchasedPlan');
+    }
+});
+
+function processPlanPurchase(planData) {
+    const currentBalance = Number(currentUser.balance);
+    const planPrice = planData.price;
+
+    if (currentBalance >= planPrice) {
+        const newBalance = currentBalance - planPrice;
+        profileBalance.textContent = "$" + newBalance;
+
+        profilePlan.textContent = planData.name;
+
+        updateUserField("balance", newBalance);
+        updateUserField("plan", planData.name);
+
+        showPurchaseModal('success', `Поздравляю! Вы успешно приобрели план "${planData.name}" за $${planPrice}!`);
+    } else {
+        const needed = planPrice - currentBalance;
+        showPurchaseModal('error', `Недостаточно средств. Вам нужно еще $${needed.toFixed(2)}. Пожалуйста, пополните баланс.`);
+    }
+}
+
+function showPurchaseModal(type, message) {
+    const modal = document.createElement('div');
+    modal.className = 'modal active';
+    modal.innerHTML = `
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>${type === 'success' ? 'Успешно!' : 'Ошибка'}</h2>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p style="text-align: center; padding: 20px; font-size: 16px;">${message}</p>
+                <button class="auth-btn" style="width: 100%;">ОК</button>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    const closeModal = () => {
+        modal.classList.remove('active');
+        setTimeout(() => modal.remove(), 300);
+    };
+
+    modal.querySelector('.modal-close').addEventListener('click', closeModal);
+    modal.querySelector('.auth-btn').addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+}
 
 document.getElementById("logoutBtn").addEventListener("click", () => {
     localStorage.removeItem("currentUser");
@@ -91,9 +153,39 @@ quickAmountBtns.forEach(btn => {
 
 confirmAddBalance.addEventListener("click", () => {
     let amount = Number(amountInput.value);
-    if (isNaN(amount) || amount <= 0) return;
+    if (isNaN(amount) || amount <= 0) {
+        showNotification('Пожалуйста, введите корректную сумму', 'error');
+        return;
+    }
     const newBalance = Number(currentUser.balance) + amount;
     profileBalance.textContent = "$" + newBalance;
     updateUserField("balance", newBalance);
     balanceModal.classList.remove("active");
+    showNotification(`Успешно добавлено $${amount.toFixed(2)} на ваш баланс!`, 'success');
 });
+
+function showNotification(message, type) {
+    const notification = document.createElement('div');
+    notification.textContent = message;
+
+    Object.assign(notification.style, {
+        position: 'fixed',
+        top: '100px',
+        right: '20px',
+        background: type === 'success' ? '#2ecc71' : '#e74c3c',
+        color: 'white',
+        padding: '1rem 1.5rem',
+        borderRadius: '12px',
+        boxShadow: '0 8px 24px rgba(0, 0, 0, 0.12)',
+        zIndex: '3000',
+        animation: 'slideInRight 0.3s ease',
+        fontWeight: '600'
+    });
+
+    document.body.appendChild(notification);
+
+    setTimeout(() => {
+        notification.style.animation = 'slideOutRight 0.3s ease';
+        setTimeout(() => notification.remove(), 300);
+    }, 3000);
+}
