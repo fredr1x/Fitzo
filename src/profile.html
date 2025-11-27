@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<div class="profile-container">
+    <div class="profile-card">
+        <div class="profile-left">
+            <img id="profileAvatar" class="profile-avatar" src="../resources/default-avatar.png" alt="Avatar">
+            <button class="avatar-upload-btn" id="editProfileBtn">Edit profile</button>
+        </div>
+
+        <div class="profile-right">
+            <h2 id="profileName"></h2>
+            <p class="profile-email" id="profileEmail"></p>
+
+            <div class="profile-balance-box">
+                <div class="balance-info">
+                    <p>Balance:</p>
+                    <h3 id="profileBalance">$0</h3>
+                </div>
+                <button class="balance-btn" id="addBalanceBtn">Add balance</button>
+            </div>
+
+            <div class="profile-plan">
+                <p>Subscription Plan:</p>
+                <h3 id="profilePlan">Free</h3>
+            </div>
+
+            <button class="home-btn" id="homeBtn">Home</button>
+            <button class="logout-btn" id="logoutBtn">Logout</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="editProfileModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Edit Profile</h2>
+            <button class="modal-close" id="closeEditModal">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label for="editName">Full Name</label>
+                <input type="text" id="editName">
+            </div>
+            <div class="form-group">
+                <label for="editEmail">Email</label>
+                <input type="email" id="editEmail">
+            </div>
+            <div class="form-group">
+                <label for="editAvatar">Avatar</label>
+                <input type="file" id="editAvatar" accept="image/*">
+            </div>
+            <button class="auth-btn" id="saveProfileBtn">Save</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="addBalanceModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Add Balance</h2>
+            <button class="modal-close" id="closeBalanceModal">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p class="current-balance">Current Balance: <strong id="modalCurrentBalance">0</strong></p>
+            <div class="form-group amount-input-wrapper">
+                <input type="number" id="amountInput" placeholder="Enter amount">
+            </div>
+            <div class="quick-amounts">
+                <button class="quick-amount-btn" data-amount="10">$10</button>
+                <button class="quick-amount-btn" data-amount="25">$25</button>
+                <button class="quick-amount-btn" data-amount="50">$50</button>
+                <button class="quick-amount-btn" data-amount="100">$100</button>
+            </div>
+            <button class="auth-btn" id="confirmAddBalance">Add balance</button>
+        </div>
+    </div>
+</div>
+
+<script src="js/profile.js"></script>
+</body>
+</html>
