@@ -172,4 +172,30 @@ document.addEventListener('DOMContentLoaded', () => {
     new ContactForm();
     new ScrollAnimations();
     new SmoothScroll();
+
+    const navToggle = document.querySelector(".nav-toggle");
+    const navMenu = document.querySelector(".nav-menu");
+
+    if (navToggle && navMenu) {
+        navToggle.addEventListener("click", () => {
+            navMenu.classList.toggle("active");
+            navToggle.classList.toggle("open");
+        });
+
+        document.querySelectorAll(".nav-link").forEach(link => {
+            link.addEventListener("click", () => {
+                if (window.innerWidth <= 968) {
+                    navMenu.classList.remove("active");
+                    navToggle.classList.remove("open");
+                }
+            });
+        });
+
+        window.addEventListener("resize", () => {
+            if (window.innerWidth > 968) {
+                navMenu.classList.remove("active");
+                navToggle.classList.remove("open");
+            }
+        });
+    }
 });
